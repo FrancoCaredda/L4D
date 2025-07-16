@@ -1,0 +1,12 @@
+.diversion/
+.idea/
+.vs/
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Content/
+
+.vsconfig
+*.sln
+.dvignore
