@@ -17,9 +17,10 @@ void AL4DPlayerController::BeginPlay()
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem =
 		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 
-	check(InputSubsystem);
-	
-	InputSubsystem->AddMappingContext(DefaultMappingContext, 0);
+	if (InputSubsystem)
+	{
+		InputSubsystem->AddMappingContext(DefaultMappingContext, 0);
+	}
 }
 
 void AL4DPlayerController::SetupInputComponent()

@@ -3,6 +3,8 @@
 
 #include "Characters/L4DCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Components/HealthComponent.h"
+#include "Player/L4DPlayerState.h"
 
 AL4DCharacter::AL4DCharacter()
 {
@@ -11,4 +13,35 @@ AL4DCharacter::AL4DCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
 	CameraComponent->bUsePawnControlRotation = true;
+}
+
+void AL4DCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	const AL4DPlayerState* pPlayerState = GetPlayerState<AL4DPlayerState>();
+	check(pPlayerState);
+	
+	HealthComponent = pPlayerState->GetHealthComponent();
+}
+
+void AL4DCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	
+	const AL4DPlayerState* pPlayerState = GetPlayerState<AL4DPlayerState>();
+	check(pPlayerState);
+	
+	HealthComponent = pPlayerState->GetHealthComponent();
+	HealthComponent->HealthChanged.AddDynamic(this, &AL4DCharacter::OnHealthChanged);
+}
+
+UHealthComponent* AL4DCharacter::GetHealthComponent() const
+{
+	return HealthComponent;
+}
+
+void AL4DCharacter::OnHealthChanged(float CurrentHealth, float MaxHealth)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Health: %f"), CurrentHealth));
 }
