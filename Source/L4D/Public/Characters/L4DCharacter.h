@@ -7,6 +7,7 @@
 #include "Interfaces/HealthInterface.h"
 #include "L4DCharacter.generated.h"
 
+class UWeaponComponent;
 class USpringArmComponent;
 class UCameraComponent;
 
@@ -30,4 +31,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health")
 	TObjectPtr<UHealthComponent> HealthComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+	TObjectPtr<UWeaponComponent> WeaponComponent;
 };

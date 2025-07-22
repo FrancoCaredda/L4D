@@ -5,9 +5,9 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "InputMappingContext.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
+#include "Components/WeaponComponent.h"
 #include "GameFramework/Character.h"
 
 void AL4DPlayerController::BeginPlay()
@@ -71,12 +71,27 @@ void AL4DPlayerController::LookTriggered(const FInputActionValue& Value)
 
 void AL4DPlayerController::FireStarted(const FInputActionValue& Value)
 {
-	
+	APawn* aPawn = GetPawn();
+
+	UWeaponComponent* WeaponComponent = aPawn->GetComponentByClass<UWeaponComponent>();
+
+	if (WeaponComponent)
+	{
+		FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+		if (!TimerManager.IsTimerActive(FireTickTimer) ||
+			!FireTickTimer.IsValid())
+		{
+			FireTick();
+			TimerManager.SetTimer(FireTickTimer, this, &AL4DPlayerController::FireTick,
+				WeaponComponent->GetFireRate(), true);
+		}
+	}
 }
 
 void AL4DPlayerController::FireEnded(const FInputActionValue& Value)
 {
-	
+	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+	TimerManager.ClearTimer(FireTickTimer);
 }
 
 void AL4DPlayerController::JumpStarted(const FInputActionValue& Value)
@@ -87,4 +102,24 @@ void AL4DPlayerController::JumpStarted(const FInputActionValue& Value)
 void AL4DPlayerController::JumpEnded(const FInputActionValue& Value)
 {
 	GetPawn<ACharacter>()->StopJumping();
+}
+
+void AL4DPlayerController::FireTick()
+{
+	APawn* aPawn = GetPawn();
+
+	UWeaponComponent* WeaponComponent = aPawn->GetComponentByClass<UWeaponComponent>();
+
+	if (WeaponComponent)
+	{
+		int32 Width, Height;
+		GetViewportSize(Width, Height);
+
+		FVector WorldPosition, WorldDirection;
+		if (DeprojectScreenPositionToWorld(Width * 0.5f, Height * 0.5f,
+			WorldPosition, WorldDirection))
+		{
+			WeaponComponent->TryShoot(WorldPosition, WorldDirection);
+		}
+	}
 }

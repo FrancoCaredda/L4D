@@ -4,6 +4,7 @@
 #include "Characters/L4DCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/HealthComponent.h"
+#include "Components/WeaponComponent.h"
 #include "Player/L4DPlayerState.h"
 
 AL4DCharacter::AL4DCharacter()
@@ -13,6 +14,14 @@ AL4DCharacter::AL4DCharacter()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
 	CameraComponent->bUsePawnControlRotation = true;
+
+	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>(TEXT("WeaponComponent"));
+	if (WeaponComponent)
+	{
+		WeaponComponent->AttachToComponent(GetMesh(),
+			FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("HandGrip_R"));
+		WeaponComponent->SetIsReplicated(true);
+	}
 }
 
 void AL4DCharacter::PossessedBy(AController* NewController)

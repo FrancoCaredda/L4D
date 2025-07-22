@@ -22,11 +22,14 @@ protected:
 	void MoveTriggered(const FInputActionValue& Value);
 	void LookTriggered(const FInputActionValue& Value);
 
+	// TODO: Take a look at the PawnMovementComponent and how they prevent lags
 	void FireStarted(const FInputActionValue& Value);
 	void FireEnded(const FInputActionValue& Value);
 
 	void JumpStarted(const FInputActionValue& Value);
 	void JumpEnded(const FInputActionValue& Value);
+
+	void FireTick();
 protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
@@ -42,4 +45,6 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> FireAction;
+private:
+	FTimerHandle FireTickTimer;
 };
