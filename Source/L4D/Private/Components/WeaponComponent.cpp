@@ -54,6 +54,11 @@ bool UWeaponComponent::TryShoot(const FVector& WorldPosition, const FVector& Wor
 	return false;
 }
 
+void UWeaponComponent::SetShootingState(bool NewShootingState)
+{
+	bShooting = NewShootingState;
+}
+
 float UWeaponComponent::GetFireRate() const
 {
 	if (EquippedWeapon)

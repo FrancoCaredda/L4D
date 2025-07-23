@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Characters/L4DCharacterBase.h"
 #include "Interfaces/HealthInterface.h"
+#include "Interfaces/WeaponInterface.h"
 #include "L4DCharacter.generated.h"
 
 class UWeaponComponent;
@@ -12,7 +13,7 @@ class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS()
-class L4D_API AL4DCharacter : public AL4DCharacterBase, public IHealthInterface
+class L4D_API AL4DCharacter : public AL4DCharacterBase, public IHealthInterface, public IWeaponInterface
 {
 	GENERATED_BODY()
 public:
@@ -22,6 +23,7 @@ public:
 	virtual void OnRep_PlayerState() override;
 
 	virtual UHealthComponent* GetHealthComponent() const override;
+	virtual UWeaponComponent* GetWeaponComponent() const override;
 protected:
 	UFUNCTION()
 	void OnHealthChanged(float CurrentHealth, float MaxHealth);

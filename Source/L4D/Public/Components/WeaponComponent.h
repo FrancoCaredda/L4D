@@ -25,6 +25,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool TryShoot(const FVector& WorldPosition, const FVector& WorldDirection);
 
+	UFUNCTION(BlueprintCallable)
+	void SetShootingState(bool NewShootingState);
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE bool IsShooting() const { return bShooting; }
+	
 	UFUNCTION(BlueprintPure)
 	float GetFireRate() const;
 	
@@ -51,4 +57,6 @@ private:
 	
 	UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
 	TObjectPtr<AL4DWeaponBase> EquippedWeapon;
+
+	bool bShooting = false;
 };

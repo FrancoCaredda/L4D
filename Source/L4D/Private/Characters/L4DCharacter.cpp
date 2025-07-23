@@ -12,9 +12,9 @@ AL4DCharacter::AL4DCharacter()
 	bUseControllerRotationYaw = true;
 	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-	CameraComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+	CameraComponent->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	CameraComponent->bUsePawnControlRotation = true;
-
+	
 	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>(TEXT("WeaponComponent"));
 	if (WeaponComponent)
 	{
@@ -48,6 +48,11 @@ void AL4DCharacter::OnRep_PlayerState()
 UHealthComponent* AL4DCharacter::GetHealthComponent() const
 {
 	return HealthComponent;
+}
+
+UWeaponComponent* AL4DCharacter::GetWeaponComponent() const
+{
+	return WeaponComponent;
 }
 
 void AL4DCharacter::OnHealthChanged(float CurrentHealth, float MaxHealth)

@@ -3,11 +3,15 @@
 
 #include "Player/L4DPlayerController.h"
 
+#include "Components/WeaponComponent.h"
+
+#include "Interfaces/WeaponInterface.h"
+
+
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
-#include "Components/WeaponComponent.h"
 #include "GameFramework/Character.h"
 
 void AL4DPlayerController::BeginPlay()
@@ -71,16 +75,15 @@ void AL4DPlayerController::LookTriggered(const FInputActionValue& Value)
 
 void AL4DPlayerController::FireStarted(const FInputActionValue& Value)
 {
-	APawn* aPawn = GetPawn();
-
-	UWeaponComponent* WeaponComponent = aPawn->GetComponentByClass<UWeaponComponent>();
-
-	if (WeaponComponent)
+	if (IWeaponInterface* WeaponInterface = Cast<IWeaponInterface>(GetPawn()))
 	{
 		FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+		UWeaponComponent* WeaponComponent = WeaponInterface->GetWeaponComponent();
+
 		if (!TimerManager.IsTimerActive(FireTickTimer) ||
 			!FireTickTimer.IsValid())
 		{
+			WeaponComponent->SetShootingState(true);
 			FireTick();
 			TimerManager.SetTimer(FireTickTimer, this, &AL4DPlayerController::FireTick,
 				WeaponComponent->GetFireRate(), true);
@@ -92,6 +95,11 @@ void AL4DPlayerController::FireEnded(const FInputActionValue& Value)
 {
 	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
 	TimerManager.ClearTimer(FireTickTimer);
+
+	if (IWeaponInterface* WeaponInterface = Cast<IWeaponInterface>(GetPawn()))
+	{
+		WeaponInterface->GetWeaponComponent()->SetShootingState(false);
+	}
 }
 
 void AL4DPlayerController::JumpStarted(const FInputActionValue& Value)
@@ -106,11 +114,7 @@ void AL4DPlayerController::JumpEnded(const FInputActionValue& Value)
 
 void AL4DPlayerController::FireTick()
 {
-	APawn* aPawn = GetPawn();
-
-	UWeaponComponent* WeaponComponent = aPawn->GetComponentByClass<UWeaponComponent>();
-
-	if (WeaponComponent)
+	if (IWeaponInterface* WeaponInterface = Cast<IWeaponInterface>(GetPawn()))
 	{
 		int32 Width, Height;
 		GetViewportSize(Width, Height);
@@ -119,7 +123,7 @@ void AL4DPlayerController::FireTick()
 		if (DeprojectScreenPositionToWorld(Width * 0.5f, Height * 0.5f,
 			WorldPosition, WorldDirection))
 		{
-			WeaponComponent->TryShoot(WorldPosition, WorldDirection);
+			WeaponInterface->GetWeaponComponent()->TryShoot(WorldPosition, WorldDirection);
 		}
 	}
 }
