@@ -12,6 +12,8 @@ class UWeaponComponent;
 class USpringArmComponent;
 class UCameraComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerStateReplicated);
+
 UCLASS()
 class L4D_API AL4DCharacter : public AL4DCharacterBase, public IHealthInterface, public IWeaponInterface
 {
@@ -24,7 +26,12 @@ public:
 
 	virtual UHealthComponent* GetHealthComponent() const override;
 	virtual UWeaponComponent* GetWeaponComponent() const override;
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerStateReplicated OnPlayerStateReplicated;
 protected:
+	virtual void BeginPlay() override;
+	
 	UFUNCTION()
 	void OnHealthChanged(float CurrentHealth, float MaxHealth);
 protected:

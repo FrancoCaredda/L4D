@@ -43,6 +43,7 @@ void AL4DCharacter::OnRep_PlayerState()
 	
 	HealthComponent = pPlayerState->GetHealthComponent();
 	HealthComponent->HealthChanged.AddDynamic(this, &AL4DCharacter::OnHealthChanged);
+	OnPlayerStateReplicated.Broadcast();
 }
 
 UHealthComponent* AL4DCharacter::GetHealthComponent() const
@@ -53,6 +54,16 @@ UHealthComponent* AL4DCharacter::GetHealthComponent() const
 UWeaponComponent* AL4DCharacter::GetWeaponComponent() const
 {
 	return WeaponComponent;
+}
+
+void AL4DCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (GetNetMode() == NM_ListenServer)
+	{
+		OnPlayerStateReplicated.Broadcast();
+	}
 }
 
 void AL4DCharacter::OnHealthChanged(float CurrentHealth, float MaxHealth)
