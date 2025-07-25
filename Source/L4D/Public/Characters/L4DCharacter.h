@@ -31,9 +31,6 @@ public:
 	FOnPlayerStateReplicated OnPlayerStateReplicated;
 protected:
 	virtual void BeginPlay() override;
-	
-	UFUNCTION()
-	void OnHealthChanged(float CurrentHealth, float MaxHealth);
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UCameraComponent> CameraComponent;

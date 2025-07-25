@@ -42,7 +42,6 @@ void AL4DCharacter::OnRep_PlayerState()
 	check(pPlayerState);
 	
 	HealthComponent = pPlayerState->GetHealthComponent();
-	HealthComponent->HealthChanged.AddDynamic(this, &AL4DCharacter::OnHealthChanged);
 	OnPlayerStateReplicated.Broadcast();
 }
 
@@ -64,9 +63,4 @@ void AL4DCharacter::BeginPlay()
 	{
 		OnPlayerStateReplicated.Broadcast();
 	}
-}
-
-void AL4DCharacter::OnHealthChanged(float CurrentHealth, float MaxHealth)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Health: %f"), CurrentHealth));
 }

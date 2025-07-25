@@ -14,7 +14,7 @@ void UHealthComponent::TakeDamage(float Damage)
 	if (GetOwnerRole() == ROLE_Authority)
 	{
 		CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0, MaxHealth);
-		HealthChanged.Broadcast(CurrentHealth, MaxHealth);
+		HealthChanged.Broadcast(CurrentHealth, MaxHealth, GetOwner());
 	}
 }
 
@@ -37,6 +37,6 @@ void UHealthComponent::BeginPlay()
 
 void UHealthComponent::OnRep_CurrentHealth()
 {
-	HealthChanged.Broadcast(CurrentHealth, MaxHealth);
+	HealthChanged.Broadcast(CurrentHealth, MaxHealth, GetOwner());
 }
 
